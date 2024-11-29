@@ -1,14 +1,31 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Calculator {
 
     public int run(String input) {
-       // List<String> list = new ArrayList<>(Arrays.stream(input.split("")).toList());
-        return calculation(input);
+        Queue<String> queue = new LinkedList<>(Arrays.stream(input.split("")).toList());
+        return parenthesesCheck(queue);
     }
 
+    // 괄호 만나면 해당 괄호 값 정수로 반환
+    public int parenthesesCheck(Queue<String> queue){
+        StringBuilder sb = new StringBuilder();
+
+        while(!queue.isEmpty()){
+            String element = queue.poll();
+            if(element.equals("(")){
+                sb.append(parenthesesCheck(queue));
+            }else if(element.equals(")")){
+                break;
+            }else {
+                sb.append(element);
+            }
+        }
+
+        return calculation(sb.toString());
+    }
+
+    // 괄호 없는 다항식 계산
     public int calculation(String polynomial){
         List<String> elements = new ArrayList<>(Arrays.stream(polynomial.split(" ")).toList());
         List<Integer> num = new ArrayList<>();
@@ -66,8 +83,3 @@ public class Calculator {
         return a / b;
     }
 }
-
-// 재귀
-// 1. 괄호 없는 상태 계산 메소드
-// 2. 괄호 확인시 재귀 발동 -> 닫는 괄호 확인시 해당 문자열 1번 계산 후 반환
-// 3. (1 + 2 * (1 + 2 / 3 - 4 * 5))
